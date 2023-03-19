@@ -6,27 +6,6 @@ from discord import app_commands
 from dotenv import load_dotenv
 
 
-def write_to_env(key, value):
-    with open(".env", "r") as f:
-        lines = f.readlines()
-    # Check if the key already exists in the file
-    key_exists = False
-    for i, line in enumerate(lines):
-        if line.startswith(key):
-            # Replace the existing value with the new value
-            lines[i] = f"{key}={value}\n"
-            key_exists = True
-            break
-    # If the key doesn't exist, append the new variable to the end of the file
-    if not key_exists:
-        lines.append(f"{key}={value}\n")
-    # Write the updated contents to the .env file
-    with open(".env", "w") as f:
-        f.writelines(lines)
-    # Set the env var for the current session
-    os.environ[key] = str(value)
-
-
 def get_int_from_env(env_name):
     env_value = os.getenv(env_name)
     if env_value is not None:
@@ -59,6 +38,17 @@ if not os.path.isfile("data/pviews.json"):
 else:
     with open("data/pviews.json", "r") as f:
         pviews_db = json.load(f)
+if not os.path.isfile("data/cache.json"):
+    cache = {}
+else:
+    with open("data/cache.json", "r") as f:
+        cache = json.load(f)
+
+
+def set_cache(key, value):
+    cache[key] = value
+    with open("data/cache.json", "w") as f:
+        json.dump(cache, f)
 
 
 # ( STR, INT )
@@ -127,13 +117,13 @@ async def get_ch_in_cat(guild, channel_id, category_id):
 
 async def get_category(guild):
     # INIT CATEGORY
-    CAT_ID = get_int_from_env("FORM_CATEGORY")
+    CAT_ID = cache["FORM_CATEGORY"]
     if not CAT_ID:
         log_msg = "Creating Forms Category"
         form_category = await guild.create_category(
             name=f_data["msg"]["category_name"], reason=log_msg
         )
-        write_to_env("FORM_CATEGORY", form_category.id)
+        set_cache("FORM_CATEGORY", form_category.id)
     else:
         form_category = await guild.fetch_channel(CAT_ID)
     return form_category
@@ -141,8 +131,8 @@ async def get_category(guild):
 
 async def get_forum(guild):
     # INIT FORUM CHANNEL
-    CAT_ID = get_int_from_env("FORM_CATEGORY")
-    FORUM_ID = get_int_from_env("FORM_FORUM")
+    CAT_ID = cache["FORM_CATEGORY"]
+    FORUM_ID = cache["FORM_FORUM"]
     if not FORUM_ID:
         log_msg = "Creating Forms Forum"
         cat = await get_category(guild)
@@ -152,7 +142,7 @@ async def get_forum(guild):
             topic=f_data["msg"]["forum_topic"],
             category=cat,
         )
-        write_to_env("FORM_FORUM", forum.id)
+        set_cache("FORM_FORUM", forum.id)
     else:
         forum = await get_ch_in_cat(guild, FORUM_ID, CAT_ID)
     return forum
@@ -160,7 +150,7 @@ async def get_forum(guild):
 
 async def get_archive(guild, category_id):
     # INIT ARCHIVE CHANNEL
-    LOG_ID = get_int_from_env("LOG_CHANNEL")
+    LOG_ID = cache["LOG_CHANNEL"]
     if not LOG_ID:  # If channel got deleted or does not exist yet
         log_msg = "Creating Archived Forms Channel"
         cat = await get_category(guild)
@@ -170,7 +160,7 @@ async def get_archive(guild, category_id):
             topic=f_data["msg"]["archive_topic"],
             reason=log_msg,
         )
-        write_to_env("LOG_CHANNEL", archive.id)
+        set_cache("LOG_CHANNEL", archive.id)
     else:
         archive = await get_ch_in_cat(guild, LOG_ID, category_id)
     return archive
@@ -356,7 +346,7 @@ async def close_thread(interaction, cid, btn_type, reason):
     await interaction.response.defer(ephemeral=True, thinking=True)
     DISCORD_GUILD = discord.utils.get(client.guilds, id=interaction.guild_id)
     channel = await DISCORD_GUILD.fetch_channel(cid)
-    CAT_ID = get_int_from_env("FORM_CATEGORY")
+    CAT_ID = cache["FORM_CATEGORY"]
     archive = await get_archive(DISCORD_GUILD, CAT_ID)
     embed = interaction.message.embeds[0]
     status_emoji = "\U00002705" if btn_type == "accept" else "\U000026d4"
