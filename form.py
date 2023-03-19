@@ -89,8 +89,6 @@ class MyClient(discord.Client):
     def __init__(self) -> None:
         intents = discord.Intents.default()
         super().__init__(intents=intents)
-
-        # Register application commands
         self.tree = app_commands.CommandTree(self)
 
     async def on_ready(self):
@@ -106,7 +104,8 @@ class MyClient(discord.Client):
                 # ch_id -> msg_id -> list(form_id)
                 self.add_view(FormsView(ch_id, msg_id, pviews_db[ch_id][msg_id]))
         # Sync the application command with Discord.
-        await self.tree.sync(guild=DISCORD_GUILD)
+        guild = discord.utils.get(self.guilds, id=GUILD_ID)
+        await self.tree.sync(guild=guild)
 
 
 def forum_exists(category, thread_name):
@@ -400,11 +399,10 @@ class CloseReason(discord.ui.Modal, title="Reason"):
 
 
 client = MyClient()
-DISCORD_GUILD = discord.Object(id=GUILD_ID)
+DISCORD_GUILD = discord.utils.get(client.guilds, id=GUILD_ID)
 
 
 @client.tree.command(guild=DISCORD_GUILD, description=f_data["msg"]["cmd_desc"])
-@app_commands.guild_only
 async def form(interaction: discord.Interaction, form_id: str):
     form_template = None
     for f in f_data["forms"]:
@@ -420,7 +418,6 @@ async def form(interaction: discord.Interaction, form_id: str):
 
 
 @client.tree.command(guild=DISCORD_GUILD, description=f_data["msg"]["cmd_desc"])
-@app_commands.guild_only
 @app_commands.default_permissions(manage_messages=True)
 async def formpost(interaction: discord.Interaction, persist: bool, form_ids: str):
     is_invalid = False
