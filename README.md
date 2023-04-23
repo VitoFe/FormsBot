@@ -28,3 +28,7 @@ Before running the bot, you need to setup some environment variables:
 ## License :page_with_curl:
 
 This project is licensed under the MIT License - see the LICENSE file included in this project for details.
+
+## Disclaimer :warning:
+
+This project is not endorsed or affiliated with discord.py. Discord.py is licensed under the MIT License and its source code can be found at https://github.com/Rapptz/discord.py. The author of discord.py (Rapptz) is not liable for any damages or issues arising from the use of discord.py in this project. This project respects the terms and conditions of the MIT License and acknowledges the authorship and contribution of discord.py. 
