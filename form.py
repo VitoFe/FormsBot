@@ -1,6 +1,7 @@
 import os
 import json
 import sys
+import asyncio
 from datetime import datetime
 from dotenv import load_dotenv
 from discord import app_commands
@@ -28,9 +29,14 @@ if not GUILD_ID:
         print("Exiting...")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
+
 # Load Configuration
-with open("config.json", "r", encoding="utf-8") as config_file:
-    f_data = json.load(config_file)
+def load_config():
+    with open("config.json", "r", encoding="utf-8") as config_file:
+        return json.load(config_file)
+
+
+f_data = load_config()
 # Load Data
 if not os.path.isfile("data/fviews.json"):
     views_db = {}
@@ -110,6 +116,15 @@ class MyClient(discord.Client):
         self.tree = app_commands.CommandTree(self)
 
     async def on_ready(self):
+        os.system('clear')
+        print(r"""
+          ______                       ____        _   
+         |  ____|                     |  _ \      | |  
+         | |__ ___  _ __ _ __ ___  ___| |_) | ___ | |_ 
+         |  __/ _ \| '__| '_ ` _ \/ __|  _ < / _ \| __|
+         | | | (_) | |  | | | | | \__ \ |_) | (_) | |_ 
+         |_|  \___/|_|  |_| |_| |_|___/____/ \___/ \__|
+        """)
         print(
             f"Logged in as {self.user} (ID: {self.user.id})"
         )
@@ -289,7 +304,7 @@ class FormModal(discord.ui.Modal, title="Test"):
         )
         # Users are added by mentions
         await thread.add_user(interaction.user)
-        #await thread.send(content=f"{role.mention}")
+        # await thread.send(content=f"{role.mention}")
         # for member in role.members:
         #    await thread.add_user(member)
         # await message.add_reaction(u"\U00002705")
@@ -326,7 +341,7 @@ class FormButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         if self.form_template["unique"] and user_has_fview(
-            interaction.user.id, self.form_id
+                interaction.user.id, self.form_id
         ):
             await interaction.response.send_message(
                 content=f_data["msg"]["error_unique"], ephemeral=True
@@ -430,7 +445,7 @@ class CloseReason(discord.ui.Modal, title=f_data["msg"]["reason"]):
         )
 
     async def on_error(
-        self, interaction: discord.Interaction, error: Exception
+            self, interaction: discord.Interaction, error: Exception
     ) -> None:
         await interaction.response.send_message(
             f_data["msg"]["error_message"], ephemeral=True
@@ -480,5 +495,12 @@ async def formpost(interaction: discord.Interaction, persist: bool, form_ids: st
         await interaction.followup.send(content="\U00002705", ephemeral=True)
 
 
+@app_commands.default_permissions(manage_messages=True)
+async def formreload(interaction: discord.Interaction):
+    global f_data
+    f_data = load_config()
+    await interaction.followup.send(content="\U00002705", ephemeral=True)
+
+
 client.run(BOT_TOKEN)
-update_nick()
+asyncio.run(update_nick())
