@@ -7,6 +7,10 @@ from discord import app_commands
 import discord
 
 
+# PERM INTEGER 157236587600
+# Emoji list: https://gist.github.com/Vexs/629488c4bb4126ad2a9909309ed6bd71
+
+
 def get_int_from_env(env_name):
     env_value = os.getenv(env_name)
     if env_value is not None:
@@ -103,8 +107,7 @@ def user_has_fview(user_id, form_id):
     return False
 
 
-async def update_nick():
-    guild = discord.utils.get(client.guilds, id=GUILD_ID)
+async def update_nick(guild):
     client_member = guild.me
     bot_nickname = config.lang["bot_nickname"]
     if client_member.nick != bot_nickname:
@@ -305,10 +308,6 @@ class FormModal(discord.ui.Modal, title="Test"):
         )
         # Users are added by mentions
         await thread.add_user(interaction.user)
-        # for member in role.members:
-        #    await thread.add_user(member)
-        # await message.add_reaction(u"\U00002705")
-        # await message.add_reaction(u"\U000026d4")
         config.register_fview(self.form_id, thread.id, interaction.user.id)
         await interaction.followup.send(
             content=f"{self.response_message}", ephemeral=True
@@ -503,7 +502,7 @@ async def formpost(interaction: discord.Interaction, persist: bool, form_ids: st
 @app_commands.default_permissions(manage_messages=True)
 async def formreload(interaction: discord.Interaction):
     config.reload_config()
-    await update_nick()
+    await update_nick(interaction.guild)
     await interaction.followup.send(content="\U00002705", ephemeral=True)
 
 
