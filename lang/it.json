@@ -1,0 +1,20 @@
+{
+  "bot_nickname": "Moduli",
+  "bot_activity_name": "Moduli",
+  "category_name": "\uD83D\uDCD1 MODULI",
+  "forum_topic": "Una volta inserito il modulo, non disturbare lo staff sollecitando di leggere/rispondere, poiché riceviamo una notifica diretta.",
+  "archive_topic": "Archivio Moduli",
+  "archive_name": "archivio-moduli",
+  "invalid_fid": "Invalid Form Id",
+  "cmd_desc": "Compila un Modulo",
+  "approved": "Approvato",
+  "denied": "Respinto",
+  "reason": "Motivazione",
+  "reason_desc": "Inserisci una motivazione...",
+  "reviewed_by": "Revisionato da",
+  "error_message": "Oops, c'è stato un errore! Contatta un admin inviando uno screenshot...",
+  "error_unique": "Hai già inviato questo Modulo ed è ancora in attesa di risposta. Sii paziente e controlla di aver inserito tutte le informazioni necessarie.",
+  "error_perms": "Non hai i permessi necessari per farlo!",
+  "cancel_message": "Hai annullato l'invio di questo Modulo.",
+  "closed_message": "Il Modulo che hai inviato è stato processato e l'esito della tua richiesta è riportato di seguito:"
+}
