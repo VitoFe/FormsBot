@@ -24,7 +24,8 @@ You also need to create a bot account on Discord and invite it to your server. F
 Before running the bot, you need to setup some environment variables:
 - `BOT_TOKEN`: The token of your Bot application, from [Discord Developer Portal](https://discord.com/developers/applications)
 - `GUILD_ID`: The ID of your Discord Server. To get your Discord server ID, you need to turn on the developer mode in your Discord app settings. This will let you copy the ID of any server, user, channel, or message by right-clicking on it and choosing Copy ID from the context menu.
-Required permissions integer: 157236587600
+
+Required permissions integer: `157236587600`
 
 ## License :page_with_curl:
 
