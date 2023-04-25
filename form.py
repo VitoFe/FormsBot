@@ -1,15 +1,10 @@
 import os
 import json
 import sys
-import asyncio
 from datetime import datetime
 from dotenv import load_dotenv
 from discord import app_commands
 import discord
-
-
-# PERM INTEGER 157236587600
-# Emoji list: https://gist.github.com/Vexs/629488c4bb4126ad2a9909309ed6bd71
 
 
 def get_int_from_env(env_name):
@@ -38,7 +33,7 @@ class Settings:
     def __init__(self, config_file):
         self.config_file = config_file
         self.config = self.load_json(config_file)
-        self.lang_file = "lang.json"
+        self.lang_file = f"lang/{config['lang']}.json"
         self.lang = self.load_json(self.lang_file, default={})
         self.views_file = "data/fviews.json"
         self.views_db = self.load_json(self.views_file, default={})
@@ -111,7 +106,7 @@ def user_has_fview(user_id, form_id):
 async def update_nick():
     guild = discord.utils.get(client.guilds, id=GUILD_ID)
     client_member = guild.me
-    bot_nickname = config.config["bot"]["nickname"]
+    bot_nickname = config.lang["bot_nickname"]
     if client_member.nick != bot_nickname:
         await client_member.edit(nick=bot_nickname)
         print(f'Updated Nick to {bot_nickname}')
@@ -120,7 +115,7 @@ async def update_nick():
 class MyClient(discord.Client):
     def __init__(self) -> None:
         intents = discord.Intents.default()
-        activity = discord.Game(name=config.config["bot"]["activity_name"])
+        activity = discord.Game(name=config.lang["bot_activity_name"])
         super().__init__(intents=intents, activity=activity)
         self.tree = app_commands.CommandTree(self)
 
@@ -508,8 +503,8 @@ async def formpost(interaction: discord.Interaction, persist: bool, form_ids: st
 @app_commands.default_permissions(manage_messages=True)
 async def formreload(interaction: discord.Interaction):
     config.reload_config()
+    await update_nick()
     await interaction.followup.send(content="\U00002705", ephemeral=True)
 
 
 client.run(BOT_TOKEN)
-asyncio.run(update_nick())
