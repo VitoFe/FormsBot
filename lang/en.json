@@ -1,0 +1,20 @@
+{
+  "bot_nickname": "Forms",
+  "bot_activity_name": "Forms",
+  "category_name": "\uD83D\uDCD1 FORMS",
+  "forum_topic": "Once you have entered the form, do not disturb the staff by asking them to read/reply, as we receive a direct notification.",
+  "archive_topic": "Forms Archive",
+  "archive_name": "forms-archive",
+  "invalid_fid": "Invalid Form Id",
+  "cmd_desc": "Fill out a Form",
+  "approved": "Approved",
+  "denied": "Rejected",
+  "reason": "Reason",
+  "reason_desc": "Enter a reason...",
+  "reviewed_by": "Reviewed by",
+  "error_message": "Oops, there was an error! Contact an admin by sending a screenshot...",
+  "error_unique": "You have already submitted this Form and it is still awaiting a response. Be patient and check that you have entered all the necessary information.",
+  "error_perms": "You do not have the necessary permissions to do this!",
+  "cancel_message": "You have canceled the submission of this Form.",
+  "closed_message": "The Form you submitted has been processed and the outcome of your request is reported below:"
+}
